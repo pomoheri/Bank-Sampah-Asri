@@ -34,29 +34,6 @@
                     </a>
                     <ul class="nav nav-treeview">
 
-                        <li class="nav-item">
-                            <a href="{{ route('setoran.report') }}"
-                                class="nav-link {{ request()->routeIs('setoran.report') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Laporan Setoran (Baru)</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('tarik.report') }}"
-                                class="nav-link {{ request()->routeIs('tarik.report') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Laporan Tarik (Baru)</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('transaksi.report') }}"
-                                class="nav-link {{ request()->routeIs('transaksi.report') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Laporan Transaksi</p>
-                            </a>
-                        </li>
-
-
                         @if (in_array($role, ['admin', 'teller']))
                             <li class="nav-item">
                                 <a href="{{ route('setoran.create', [], false) ?? url('/setoran/create') }}"
@@ -98,15 +75,7 @@
                             }
                         @endphp
 
-                        @if ($role === 'admin')
-                            <li class="nav-item">
-                                <a href="{{ route('transaksi.index') }}"
-                                    class="nav-link {{ request()->routeIs('transaksi.index') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-database"></i>
-                                    <p>Data Transaksi</p>
-                                </a>
-                            </li>
-                        @endif
+                        
 
                         @if ($role === 'nasabah')
                             <li class="nav-item">
@@ -135,6 +104,36 @@
                     </p>
                 </a>
                 <ul class="nav nav-treeview">
+                    @if ($role === 'admin')
+                        <li class="nav-item">
+                            <a href="{{ route('transaksi.index') }}"
+                                class="nav-link {{ request()->routeIs('transaksi.index') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-database"></i>
+                                <p>Data Transaksi</p>
+                            </a>
+                        </li>
+                    @endif
+                    <li class="nav-item">
+                        <a href="{{ route('transaksi.report') }}"
+                            class="nav-link {{ request()->routeIs('transaksi.report') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Laporan Transaksi</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('setoran.report') }}"
+                            class="nav-link {{ request()->routeIs('setoran.report') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Laporan Setoran (Baru)</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('tarik.report') }}"
+                            class="nav-link {{ request()->routeIs('tarik.report') ? 'active' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Laporan Tarik (Baru)</p>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a href="{{ route('laporan.setor', [], false) ?? url('/laporan/setor') }}"
                             class="nav-link {{ $isActive(['laporan/setor*']) ? 'active' : '' }}">

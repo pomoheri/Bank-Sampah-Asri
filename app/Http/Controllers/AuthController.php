@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,9 +29,12 @@ class AuthController extends Controller
         // If login fails, redirect back with an error message
         return back()->with('failed', 'email atau password salah');
     }
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout(Auth::user()); // Log the user out
+         Auth::logout(); // logout user
+
+        $request->session()->invalidate(); // hapus semua data session
+        $request->session()->regenerateToken();
         return redirect('/login'); // Redirect to login page
     }
     //
