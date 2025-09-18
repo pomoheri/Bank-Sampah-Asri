@@ -57,9 +57,13 @@
             </tbody>
         </table>
 
-        <!-- Pagination -->
-        {{ $data->withQueryString()->links() }}
     </div>
+    {{-- Pagination --}}
+    @if($data->count())
+    <div class="d-flex justify-content-center">
+        {{ $data->onEachSide(1)->links('pagination::bootstrap-4') }}
+    </div>
+    @endif
 
     <!-- Konfirmasi Hapus -->
     <script>

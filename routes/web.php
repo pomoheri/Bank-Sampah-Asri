@@ -43,8 +43,8 @@ Route::group(['middleware' => ['auth', 'check_role:nasabah']], function () {
     Route::get('/NasabahDashboard', [NasabahDashboardController::class, 'index'])->name('nasabah.dashboard');
 });
 
-Route::group(['middleware' => ['auth', 'check_role:admin']], function () {
-    Route::get('/AdminDashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 // contoh (opsional, sesuaikan dengan project-mu)
@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/laporan/setor', [LaporanController::class, 'setor'])->name('laporan.setor');
     Route::get('/laporan/tarik', [LaporanController::class, 'tarik'])->name('laporan.tarik');
     Route::get('/laporan/saldo', [LaporanController::class, 'saldo'])->name('laporan.saldo');
+    Route::get('/laporan/transaksi', [LaporanController::class, 'lapTransaksi'])->name('laporan.transaksi');
 });
 
 //CRUD
@@ -69,9 +70,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('nasabah', NasabahController::class);
     Route::resource('setoran', SetoranController::class);
     Route::resource('tarik', TarikController::class);
-    Route::resource('transaksi', TransaksiController::class);
     // Tambahan route untuk saldo
-    Route::get('transaksi/saldo', [TransaksiController::class, 'saldo'])->name('transaksi.saldo');
+    Route::get('transaksi/my-saldo', [LaporanController::class, 'saldo'])->name('transaksi.my-saldo');
+    Route::resource('transaksi', TransaksiController::class);
 });
 
 // Setoran

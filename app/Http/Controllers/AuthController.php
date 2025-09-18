@@ -20,9 +20,9 @@ class AuthController extends Controller
         // Attempt to log the user in
         if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
             if (Auth::user()->role == 'nasabah') {
-                return redirect()->intended('/NasabahDashboard'); // Redirect to dashboard for nasabah
+                return redirect()->intended('/dashboard'); // Redirect to dashboard for nasabah
             } else {
-                return redirect()->intended('/AdminDashboard'); // Redirect to dashboard for other roles
+                return redirect()->intended('/dashboard'); // Redirect to dashboard for other roles
             }
             //dd($request->all());
         }

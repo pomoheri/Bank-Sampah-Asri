@@ -51,7 +51,7 @@
     </div>
 
     {{-- Footer --}}
-    <footer class="main-footer text-center small">
+    <footer class="main-footer text-left small">
         <strong>&copy; {{ date('Y') }} Bank Sampah Digital.</strong> All rights reserved.
     </footer>
 
