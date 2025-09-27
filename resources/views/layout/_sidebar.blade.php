@@ -1,15 +1,19 @@
 <!-- Sidebar Menu -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="{{ route('admin.dashboard') }}" class="brand-link">
+    <a href="{{ route('admin.dashboard') }}" class="brand-link d-flex align-items-center">
+        <img src="{{ asset('images/logo.png') }}" 
+             alt="Bank Sampah Logo" 
+             class="brand-image img-circle elevation-3 me-2"
+             style="opacity:.9; width:35px; height:35px; object-fit:cover;">
         <span class="brand-text font-weight-light">Bank Sampah</span>
     </a>
     <nav class="mt-2">
         @php
             $isActive = fn($patterns) => collect((array) $patterns)->contains(fn($p) => request()->is($p));
-            $tabunganOpen = $isActive(['setoran*', 'tarik*', 'saldo*']) ? 'menu-open' : '';
-            $tabunganActive = $isActive(['setoran*', 'tarik*', 'saldo*']) ? 'active' : '';
-            $nasabahOpen = $isActive(['nasabah*']) ? 'menu-open' : '';
-            $nasabahActive = $isActive(['nasabah*']) ? 'active' : '';
+            $tabunganOpen = $isActive(['setoran*', 'tarik*', 'saldo*','transaksi*','laporan*']) ? 'menu-open' : '';
+            $tabunganActive = $isActive(['setoran*', 'tarik*', 'saldo*','transaksi*']) ? 'active' : '';
+            $nasabahOpen = $isActive(['nasabah*','user*','sampah*']) ? 'menu-open' : '';
+            $nasabahActive = $isActive(['nasabah*','user*','sampah*']) ? 'active' : '';
             $laporanActive = $isActive(['laporan', 'laporan*']) ? 'active' : '';
             $role = Auth::user()->role ?? 'viewer';
         @endphp
@@ -64,8 +68,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('nasabah.create', [], false) ?? url('/nasabah/create') }}"
-                                class="nav-link {{ $isActive(['nasabah/create']) ? 'active' : '' }}">
+                            <a href="{{ route('user.index', [], false) ?? url('/user/index') }}"
+                                class="nav-link {{ $isActive(['user']) ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>User</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('nasabah.index', [], false) ?? url('/nasabah/index') }}"
+                                class="nav-link {{ $isActive(['nasabah']) ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Nasabah</p>
                             </a>
@@ -89,15 +100,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('setoran.create', [], false) ?? url('/setoran/create') }}"
-                                class="nav-link {{ $isActive(['setoran/create']) ? 'active' : '' }}">
+                            <a href="{{ route('setoran.index', [], false) ?? url('/setoran/index') }}"
+                                class="nav-link {{ $isActive(['setoran']) ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Setor Sampah</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('tarik.create', [], false) ?? url('/tarik/create') }}"
-                                class="nav-link {{ $isActive(['tarik/create']) ? 'active' : '' }}">
+                            <a href="{{ route('tarik.index', [], false) ?? url('/tarik/index') }}"
+                                class="nav-link {{ $isActive(['tarik']) ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Tarik Dana</p>
                             </a>

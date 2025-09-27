@@ -4,9 +4,9 @@
 <div class="container-fluid mt-4">
     <div class="card shadow-sm">
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="fas fa-dollar-sign"></i> Tarik Dana</h4>
-            <a href="{{ route('tarik.create') }}" class="btn btn-success btn-sm">
-                <i class="fas fa-plus"></i> Tarik Dana
+            <h4 class="mb-0"><i class="fas fa-users"></i> Data User Aplikasi</h4>
+            <a href="{{ route('user.create') }}" class="btn btn-success btn-sm">
+                <i class="fas fa-plus"></i> Tambah User
             </a>
         </div>
         <div class="card-body">
@@ -24,24 +24,37 @@
                        class="table table-striped table-bordered table-hover nowrap w-100">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Tanggal Setor</th>
-                            <th>Nama Nasabah</th>
-                            <th>Jumlah Uang (Rp)</th>
+                            <th>Nama User</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
                             <th width="20%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($tariks as $tarik)
+                        @forelse ($users as $user)
                             <tr>
-                                <td>{{ Carbon\Carbon::parse($tarik->tanggal_tarik)->format('d F Y') }}</td>
-                                <td>{{ $tarik->nasabah ? $tarik->nasabah->nama_nasabah : '' }}</td>
-                                <td class="text-right">{{ number_format($tarik->jumlah_uang_tarik,'2',',','.') }}</td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->role }}</td>
+                               <td>
+                                    <form action="{{ route('user.toggleStatus', $user->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-active
+                                            {{ $user->status === 'active' ? 'btn-success' : 'btn-danger' }}">
+                                            {{ ucfirst($user->status) }}
+                                        </button>
+                                    </form>
+                                </td>
+
+
                                 <td>
-                                    <a href="{{ route('tarik.edit', $tarik->id) }}" 
+                                    <a href="{{ route('user.edit', $user->id) }}" 
                                        class="btn btn-warning btn-sm mb-1">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
-                                    <form action="{{ route('tarik.destroy', $tarik->id) }}" 
+                                    <form action="{{ route('user.destroy', $user->id) }}" 
                                           method="POST" class="d-inline form-hapus">
                                         @csrf 
                                         @method('DELETE')
@@ -81,13 +94,18 @@
 <script>
     $(function () {
         $('#nasabahTable').DataTable({
-            responsive: true,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
             autoWidth: false,
             columnDefs: [
                 { orderable: false, targets: -1 } // kolom aksi tidak ikut sorting
             ],
             language: {
-                sEmptyTable:   "Tidak ada data Tarik",
+                sEmptyTable:   "Tidak ada data User",
                 sInfo:         "Menampilkan _START_ - _END_ dari _TOTAL_ data",
                 sInfoEmpty:    "Menampilkan 0 - 0 dari 0 data",
                 sInfoFiltered: "(difilter dari _MAX_ total data)",
@@ -105,7 +123,6 @@
             }
         });
 
-
         // SweetAlert hapus
         $(document).on('click', '.btn-hapus', function (e) {
             e.preventDefault();
@@ -113,12 +130,32 @@
 
             Swal.fire({
                 title: 'Yakin mau hapus?',
-                text: "Data Tarik akan dihapus permanen!",
+                text: "Data User akan dihapus permanen!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-active', function (e) {
+            e.preventDefault();
+            let form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Yakin mau ubah status?',
+                text: "Data User akan di ubah statusnya!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Ubah!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {

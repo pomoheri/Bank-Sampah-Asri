@@ -103,10 +103,10 @@
       </form>
 
       <p class="mb-1 mt-3">
-        <a href="{{ url('/forgot-password') }}">Lupa password?</a>
+        <a href="{{ url('#') }}">Lupa password?</a>
       </p>
       <p class="mb-0">
-        <a href="{{ url('/register') }}" class="text-center">Daftar akun baru</a>
+        <a href="{{ url('#') }}" class="text-center">Daftar akun baru</a>
       </p>
     </div>
   </div>

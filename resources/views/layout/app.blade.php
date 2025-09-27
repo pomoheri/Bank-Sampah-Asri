@@ -61,5 +61,6 @@
 <script src="{{ asset('Adminlte/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('Adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('Adminlte/dist/js/adminlte.min.js') }}"></script>
+@stack('scripts')
 </body>
 </html>

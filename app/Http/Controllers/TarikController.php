@@ -41,6 +41,41 @@ class TarikController extends Controller
         return redirect()->route('tarik.index')->with('success', 'Penarikan berhasil disimpan.');
     }
 
+    public function edit($id)
+    {
+        $tarik = Tarik::findOrFail($id);
+
+        $nasabah = Nasabah::all();
+
+        return view('tarik.edit', compact('tarik', 'nasabah'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_tarik' => 'required|date',
+            'nasabah_id' => 'required|exists:nasabahs,id',
+            'jumlah_uang_tarik' => 'required|numeric|min:0',
+        ]);
+
+        $tarik = Tarik::findOrFail($id);
+        $tarik->update([
+            'tanggal_tarik' => $request->tanggal_tarik,
+            'nasabah_id' => $request->nasabah_id,
+            'jumlah_uang_tarik' => $request->jumlah_uang_tarik,
+        ]);
+
+        return redirect()->route('tarik.index')->with('success', 'Data tarik berhasil diperbarui');
+    }
+
+    public function destroy($id)
+    {
+        $tarik = Tarik::findOrFail($id);
+        $tarik->delete();
+
+        return redirect()->route('tarik.index')->with('success', 'Data tarik berhasil dihapus');
+    }
+
     public function report(Request $request)
     {
         $query = Tarik::with('nasabah');

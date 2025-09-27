@@ -20,8 +20,12 @@ class AdminDashboardController extends Controller
 
         if($user->role == 'nasabah') {
             $nasabah = Nasabah::where('user_id', $user->id)->first();
-            $data_setoran = Setoran::where('nasabah_id', $nasabah->id)->sum('jumlah_uang');
-            $data_tarik = Tarik::where('nasabah_id', $nasabah->id)->sum('jumlah_uang_tarik');
+            $data_setoran = 0;
+            $data_tarik = 0;
+            if($nasabah) {
+                $data_setoran = Setoran::where('nasabah_id', $nasabah->id)->sum('jumlah_uang');
+                $data_tarik = Tarik::where('nasabah_id', $nasabah->id)->sum('jumlah_uang_tarik');
+            }
 
             $data = [
                 'title'   => 'Dashboard Nasabah',

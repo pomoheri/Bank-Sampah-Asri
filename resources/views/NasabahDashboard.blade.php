@@ -25,10 +25,11 @@
       <!-- Info Boxes -->
       <div class="row">
 
-        <div class="col-lg-3 col-6">
+        <!-- Total Setoran -->
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
           <div class="small-box bg-success">
             <div class="inner">
-              <h3>Rp {{ number_format($setoran,2,',','.') }}</h3>
+              <h3>Rp {{ number_format($setoran, 2, ',', '.') }}</h3>
               <p>Total Setoran</p>
             </div>
             <div class="icon"><i class="fas fa-arrow-down"></i></div>
@@ -36,10 +37,11 @@
           </div>
         </div>
 
-        <div class="col-lg-3 col-6">
+        <!-- Total Penarikan -->
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>Rp {{ number_format($tarik,2,',','.') }}</h3>
+              <h3>Rp {{ number_format($tarik, 2, ',', '.') }}</h3>
               <p>Total Penarikan</p>
             </div>
             <div class="icon"><i class="fas fa-arrow-up"></i></div>
@@ -47,18 +49,19 @@
           </div>
         </div>
 
-        <div class="col-lg-3 col-6">
+        <!-- Saldo -->
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3>Rp {{ number_format($saldo,2,',','.') }}</h3>
+              <h3>Rp {{ number_format($saldo, 2, ',', '.') }}</h3>
               <p>Saldo Bank Sampah</p>
             </div>
             <div class="icon"><i class="fas fa-wallet"></i></div>
             <a href="#" class="small-box-footer">Detail <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   </section>
 </div>

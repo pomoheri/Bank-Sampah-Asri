@@ -1,17 +1,18 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\NasabahDashboardController;
-use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\SetoranController;
-use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\TarikController;
-use App\Http\Controllers\NasabahController;
-use App\Http\Controllers\LaporanController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\SampahController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\NasabahController;
+use App\Http\Controllers\SetoranController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\NasabahDashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -68,11 +69,13 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('sampah', SampahController::class);
     Route::resource('nasabah', NasabahController::class);
+    Route::resource('user', UserController::class);
     Route::resource('setoran', SetoranController::class);
     Route::resource('tarik', TarikController::class);
     // Tambahan route untuk saldo
     Route::get('transaksi/my-saldo', [LaporanController::class, 'saldo'])->name('transaksi.my-saldo');
     Route::resource('transaksi', TransaksiController::class);
+    Route::patch('/user/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('user.toggleStatus');
 });
 
 // Setoran

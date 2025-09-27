@@ -44,9 +44,9 @@ class SampahController extends Controller
     public function update(Request $request, Sampah $sampah)
     {
         $request->validate([
-            'jenis' => 'required|string|max:255',
-            'harga' => 'required|numeric|min:0',
-            'satuan' => 'required|string|max:100',
+            'nama_sampah'   => 'required|string|max:255',
+            'jenis_sampah'  => 'required|string|max:255',
+            'harga_per_kg'  => 'required|numeric|min:0',
         ]);
 
         $sampah->update($request->all());

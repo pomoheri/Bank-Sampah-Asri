@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Nasabah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -80,8 +81,9 @@ class LaporanController extends Controller
 
         // Filter untuk nasabah
         if ($role == 'nasabah') {
-            $setor->where('nasabah_id', $user->id);
-            $tarik->where('nasabah_id', $user->id);
+            $nasabah = Nasabah::where('user_id', $user->id)->first();
+            $setor->where('nasabah_id', $nasabah->id);
+            $tarik->where('nasabah_id', $nasabah->id);
         }
 
         // Union query

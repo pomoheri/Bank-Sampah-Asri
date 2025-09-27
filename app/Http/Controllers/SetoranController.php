@@ -14,8 +14,7 @@ class SetoranController extends Controller
     {
         $data = Setoran::with(['nasabah', 'sampah'])
             ->orderBy('tanggal_setoran', 'desc')
-            ->paginate(10) // bisa diganti sesuai jumlah per halaman
-            ->withQueryString(); // pastikan ini dipanggil saat masih QueryBuilder
+            ->paginate(10); // bisa diganti sesuai jumlah per halaman
 
         return view('setoran.index', compact('data'));
     }
@@ -48,6 +47,47 @@ class SetoranController extends Controller
 
         return redirect()->route('setoran.index')->with('success', 'Setoran berhasil disimpan');
     }
+
+    public function edit(Setoran $setoran)
+    {
+        $nasabah = Nasabah::all();             // untuk select nasabah
+        $sampah  = Sampah::all();              // untuk select sampah
+
+        return view('setoran.edit', compact('setoran', 'nasabah', 'sampah'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nasabah_id'      => 'required|exists:nasabahs,id',
+            'tanggal_setoran' => 'required|date',
+            'sampah_id'       => 'required|exists:sampahs,id',
+            'berat_setor'     => 'required|numeric|min:0.01',
+        ]);
+
+        $sampah = Sampah::findOrFail($request->sampah_id);
+        $jumlah_uang = $request->berat_setor * $sampah->harga_per_kg;
+
+        $setoran = Setoran::findOrFail($id);
+        $setoran->update([
+            'nasabah_id'      => $request->nasabah_id,
+            'tanggal_setoran' => $request->tanggal_setoran,
+            'sampah_id'       => $request->sampah_id,
+            'berat_setor'     => $request->berat_setor,
+            'jumlah_uang'     => $jumlah_uang,
+        ]);
+
+        return redirect()->route('setoran.index')->with('success', 'Setoran berhasil diperbarui.');
+    }
+
+    public function destroy(Setoran $setoran)
+    {
+        $setoran->delete();
+
+        return redirect()->route('setoran.index')->with('success', 'Setoran berhasil dihapus.');
+    }
+
+
 
     public function report(Request $request)
     {

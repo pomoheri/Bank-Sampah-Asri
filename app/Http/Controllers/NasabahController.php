@@ -44,16 +44,15 @@ class NasabahController extends Controller
 
     public function edit(Nasabah $nasabah)
     {
-        return view('nasabah.edit', compact('nasabah'));
+        $users = User::all(); // ambil semua user
+        return view('nasabah.edit', compact('nasabah','users'));
     }
 
     public function update(Request $request, Nasabah $nasabah)
     {
         $request->validate([
-            'nama'       => 'required|string|max:255',
-            'alamat'     => 'required|string|max:500',
-            'no_hp'      => 'required|string|max:20',
-            'email'      => 'nullable|email|max:255',
+            'nama_nasabah'       => 'required|string|max:255',
+            'no_hp'      => 'required|string|max:15',
         ]);
 
         $nasabah->update($request->all());
