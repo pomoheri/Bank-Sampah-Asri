@@ -23,6 +23,9 @@ Route::get('/login', function () {
 
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'store'])->name('register.store');
+
 // Route::group(['middleware' => ['auth', 'check_role:admin,nasabah']], function () {
 // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 // });

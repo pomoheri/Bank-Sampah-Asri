@@ -59,6 +59,13 @@
 
   <div class="card shadow">
     <div class="card-body login-card-body">
+      @if(session('success'))
+      <div class="alert alert-success">{{ session('success') }}</div>
+      @endif
+      @if(session('error'))
+      <div class="alert alert-danger">{{ session('error') }}</div>
+      @endif
+
       @if(session('failed'))
         <div class="alert alert-danger">{{ session('failed') }}</div>
       @endif
@@ -106,7 +113,7 @@
         <a href="{{ url('#') }}">Lupa password?</a>
       </p>
       <p class="mb-0">
-        <a href="{{ url('#') }}" class="text-center">Daftar akun baru</a>
+        <a href="{{ url('register') }}" class="text-center">Daftar akun baru</a>
       </p>
     </div>
   </div>

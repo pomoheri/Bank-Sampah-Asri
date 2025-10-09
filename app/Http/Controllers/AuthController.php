@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\Session\Session;
+use App\Models\User;
+use App\Models\Nasabah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Contracts\Session\Session;
 
 class AuthController extends Controller
 {
@@ -37,5 +40,38 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/login'); // Redirect to login page
     }
-    //
+    
+    public function register()
+    {
+        return view('auth.register');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'password' => Hash::make($request->password),
+            'role'     => 'nasabah',
+            'status'   => 'active'
+        ]);
+
+        Nasabah::create([
+            'nama_nasabah' => $request->name,
+            'no_hp'        => $request->phone,
+            'user_id'      => $user->id
+        ]);
+        
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
+    }
 }

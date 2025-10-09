@@ -29,21 +29,21 @@ class SetoranController extends Controller
     {
         $request->validate([
             'tanggal_setoran' => 'required|date',
-            'sampah_id' => 'required',
-            'berat_setor' => 'required|numeric|min:0.1',
             'nasabah_id' => 'required',
         ]);
 
-        $sampah = Sampah::findOrFail($request->sampah_id);
-        $jumlah_uang = $request->berat_setor * $sampah->harga_per_kg;
+        foreach ($request->sampah_id as $index => $idSampah) {
+            $berat = $request->berat_setor[$index];
+            $jumlah = $request->jumlah_uang[$index];
 
-        Setoran::create([
-            'tanggal_setoran' => $request->tanggal_setoran,
-            'sampah_id' => $request->sampah_id,
-            'berat_setor' => $request->berat_setor,
-            'jumlah_uang' => $jumlah_uang,
-            'nasabah_id' => $request->nasabah_id,
-        ]);
+            Setoran::create([
+                'tanggal_setoran' => $request->tanggal_setoran,
+                'sampah_id' => $idSampah,
+                'berat_setor' => $berat,
+                'jumlah_uang' => $jumlah,
+                'nasabah_id' => $request->nasabah_id,
+            ]);
+        }
 
         return redirect()->route('setoran.index')->with('success', 'Setoran berhasil disimpan');
     }
