@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Nasabah;
+use App\Models\Setoran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -118,5 +119,18 @@ class LaporanController extends Controller
         );
 
         return view('laporan.transaksi.index', compact('transaksis'));
+    }
+
+    public function rekapSetoran(Request $request)
+    {
+        $user = Auth::user();
+        $role = $user->role;
+        $date = $request->date ?? date('Y-m-d');
+
+        $setor = Setoran::with(['sampah', 'nasabah'])
+            ->where('tanggal_setoran', $date)
+            ->paginate(10);
+
+        return view('laporan.rekap-setoran.index', compact('date','setor'));
     }
 }

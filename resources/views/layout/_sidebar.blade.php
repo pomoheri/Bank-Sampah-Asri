@@ -152,6 +152,13 @@
                                 <p>Laporan Saldo</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('laporan.rekap-setoran', [], false) ?? url('/laporan/rekap-setoran') }}"
+                                class="nav-link {{ $isActive(['laporan/rekap-setoran*']) ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Rekap Setoran</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             @endif

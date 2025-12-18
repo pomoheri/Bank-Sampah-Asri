@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/laporan/tarik', [LaporanController::class, 'tarik'])->name('laporan.tarik');
     Route::get('/laporan/saldo', [LaporanController::class, 'saldo'])->name('laporan.saldo');
     Route::get('/laporan/transaksi', [LaporanController::class, 'lapTransaksi'])->name('laporan.transaksi');
+    Route::get('/laporan/rekap-setoran', [LaporanController::class, 'rekapSetoran'])->name('laporan.rekap-setoran');
 });
 
 //CRUD

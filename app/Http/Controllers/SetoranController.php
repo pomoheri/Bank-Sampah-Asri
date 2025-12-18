@@ -33,15 +33,27 @@ class SetoranController extends Controller
         ]);
 
         foreach ($request->sampah_id as $index => $idSampah) {
+
+            $id_sampah = $idSampah;
+            if($idSampah == 'manual') {
+                $sampah_manual = Sampah::create([
+                    'nama_sampah'    => $request->sampah_manual[$index],
+                    'jenis_sampah'   => '-',
+                    'harga_per_kg'   => $request->harga_manual[$index]
+                ]);
+
+                $id_sampah = $sampah_manual->id;
+            } 
+
             $berat = $request->berat_setor[$index];
             $jumlah = $request->jumlah_uang[$index];
 
             Setoran::create([
-                'tanggal_setoran' => $request->tanggal_setoran,
-                'sampah_id' => $idSampah,
-                'berat_setor' => $berat,
-                'jumlah_uang' => $jumlah,
-                'nasabah_id' => $request->nasabah_id,
+                'tanggal_setoran'   => $request->tanggal_setoran,
+                'sampah_id'         => $id_sampah,
+                'berat_setor'       => $berat,
+                'jumlah_uang'       => $jumlah,
+                'nasabah_id'        => $request->nasabah_id,
             ]);
         }
 

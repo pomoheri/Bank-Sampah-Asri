@@ -40,7 +40,7 @@
             </thead>
             <tbody>
               <tr>
-                <td>
+                {{-- <td>
                   <select name="sampah_id[]" class="form-control sampah-select" required>
                     <option value="">-- Pilih Sampah --</option>
                     @foreach ($sampah as $item)
@@ -49,8 +49,48 @@
                       </option>
                     @endforeach
                   </select>
+                </td> --}}
+
+                <td>
+                    <select name="sampah_id[]" class="form-control sampah-select" required>
+                      <option value="">-- Pilih Sampah --</option>
+
+                      @foreach ($sampah as $item)
+                        <option 
+                          value="{{ $item->id }}" 
+                          data-harga="{{ $item->harga_per_kg }}"
+                        >
+                          {{ $item->nama_sampah }} ({{ number_format($item->harga_per_kg, 0, ',', '.') }}/kg)
+                        </option>
+                      @endforeach
+
+                      <option value="manual">+ Tambah Sampah Manual</option>
+                    </select>
+
+                    <!-- input manual (hidden dulu) -->
+                    <input 
+                      type="text" 
+                      name="sampah_manual[]" 
+                      class="form-control mt-2 sampah-manual-input"
+                      placeholder="Nama sampah manual"
+                      style="display:none;"
+                    >
+
+                    
+                  </td>
+
+
+                <td>
+                  <input type="text" class="form-control harga_per_kg" readonly>
+                  {{-- Muncul ketika input sampah manual --}}
+                  <input 
+                    type="number" 
+                    name="harga_manual[]" 
+                    class="form-control harga-manual-input"
+                    placeholder="Harga per kg"
+                    style="display:none;"
+                  >
                 </td>
-                <td><input type="text" class="form-control harga_per_kg" readonly></td>
                 <td><input type="number" name="berat_setor[]" step="0.01" class="form-control berat" required></td>
                 <td><input type="text" name="jumlah_uang[]" class="form-control jumlah_uang" readonly></td>
                 <td class="text-center">
@@ -87,12 +127,48 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
+document.addEventListener('change', function (e) {
+  if (!e.target.classList.contains('sampah-select')) return
+
+  const tr = e.target.closest('tr')
+
+  const manualInput  = tr.querySelector('.sampah-manual-input')
+  const hargaManual  = tr.querySelector('.harga-manual-input')
+  const hargaAuto    = tr.querySelector('.harga_per_kg')
+
+  if (e.target.value === 'manual') {
+    // mode manual
+    manualInput.style.display = 'block'
+    hargaManual.style.display = 'block'
+    hargaAuto.style.display   = 'none'
+
+    manualInput.required = true
+    hargaManual.required = true
+
+    hargaAuto.value = ''
+  } else {
+    // mode dari master
+    manualInput.style.display = 'none'
+    hargaManual.style.display = 'none'
+    hargaAuto.style.display   = 'block'
+
+    manualInput.required = false
+    hargaManual.required = false
+    manualInput.value = ''
+    hargaManual.value = ''
+
+    const harga = e.target.selectedOptions[0]?.dataset?.harga || ''
+    hargaAuto.value = harga
+  }
+})
+
 document.addEventListener('DOMContentLoaded', function() {
   const tabel = document.querySelector('#tabelSampah tbody');
   const tambahBarisBtn = document.getElementById('tambahBaris');
 
   function hitungJumlah(row) {
-    const harga = parseFloat(row.querySelector('.harga_per_kg').value) || 0;
+    const harga = parseFloat(row.querySelector('.harga_per_kg').value) || parseFloat(row.querySelector('.harga-manual-input').value);
     const berat = parseFloat(row.querySelector('.berat').value) || 0;
     const jumlah = harga * berat;
     row.querySelector('.jumlah_uang').value = jumlah.toFixed(2);
