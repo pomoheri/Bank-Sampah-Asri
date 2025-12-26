@@ -19,7 +19,8 @@
                 </div>
                 <div class="form-group">
                      <label>Nasabah</label>
-                    <select name="nasabah_id" class="form-control" required>
+                    <select name="nasabah_id" id="nasabah_id" class="form-control" required>
+                        <option value="">-- Pilih Nasabah --</option>
                         @foreach ($nasabah as $n)
                             <option value="{{ $n->id }}">{{ $n->nama_nasabah }}</option>
                         @endforeach
@@ -28,11 +29,24 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+
+                <div class="form-group">
+                    <label>Jumlah uang yang bisa ditarik</label>
+                    <input disabled type="text" id="saldo"
+                    class="form-control"
+                    placeholder="Rp 0">
+                    <input type="hidden" id="saldo_asli" value="0">
+                </div>
+
                 <div class="form-group">
                     <label>Jumlah uang tarik</label>
-                    <input type="text" name="jumlah_uang_tarik"
-                        class="form-control @error('jumlah_uang_tarik') is-invalid @enderror"
-                        value="{{ old('jumlah_uang_tarik') }}">
+                    <input type="number" name="jumlah_uang_tarik" id="jumlah_uang_tarik"
+                        class="form-control @error('jumlah_uang_tarik') is-invalid @enderror">
+                    
+                    <small class="text-danger d-none" id="error-saldo">
+                        Jumlah tarik melebihi saldo yang tersedia
+                    </small>
+
                     @error('jumlah_uang_tarik')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -53,5 +67,43 @@
 @endsection
 @push('scripts')
 <script>
+    $('#nasabah_id').on('change', function () {
+        let nasabahId = $(this).val();
+
+        if (!nasabahId) {
+            $('#saldo').val('');
+            return;
+        }
+
+        $.ajax({
+            url: `/nasabah/${nasabahId}/saldo`,
+            type: 'GET',
+            success: function (res) {
+                $('#saldo_asli').val(res.saldo);
+
+                let rupiah = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR'
+                }).format(res.saldo);
+
+                $('#saldo').val(rupiah);
+            }
+        });
+    });
+
+    $('#jumlah_uang_tarik').on('input', function () {
+        let tarik = parseInt($(this).val()) || 0;
+        let saldo = parseInt($('#saldo_asli').val()) || 0;
+
+        if (tarik > saldo) {
+            $('#error-saldo').removeClass('d-none');
+            $('#jumlah_uang_tarik').addClass('is-invalid');
+            $('button[type="submit"]').prop('disabled', true);
+        } else {
+            $('#error-saldo').addClass('d-none');
+            $('#jumlah_uang_tarik').removeClass('is-invalid');
+            $('button[type="submit"]').prop('disabled', false);
+        }
+    });
 </script>
 @endpush

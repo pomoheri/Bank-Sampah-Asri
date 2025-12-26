@@ -28,7 +28,7 @@
                             <th>Nama Nasabah</th>
                             <th>Jenis Sampah</th>
                             <th>Sampah</th>
-                            <th>Berat (Kg)</th>
+                            <th>Berat (Kg/Pcs)</th>
                             <th>Jumlah Uang (Rp)</th>
                             <th width="20%">Aksi</th>
                         </tr>

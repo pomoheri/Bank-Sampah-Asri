@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Nasabah;
 use App\Models\Setoran;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -127,10 +129,47 @@ class LaporanController extends Controller
         $role = $user->role;
         $date = $request->date ?? date('Y-m-d');
 
-        $setor = Setoran::with(['sampah', 'nasabah'])
-            ->where('tanggal_setoran', $date)
-            ->paginate(10);
+        $setor = Setoran::selectRaw('
+                        sampah_id,
+                        SUM(berat_setor) as total_berat,
+                        SUM(jumlah_uang) as total_nominal
+                    ')
+                    ->with('sampah')
+                    ->where('tanggal_setoran', $date)
+                    ->groupBy('sampah_id')
+                    ->get();
 
-        return view('laporan.rekap-setoran.index', compact('date','setor'));
+        $totalBerat = $setor->sum('total_berat');
+        $totalNominal = $setor->sum('total_nominal');
+
+        return view('laporan.rekap-setoran.index', compact('date','setor','totalBerat','totalNominal'));
+    }
+
+    public function downloadRekapSetoran(Request $request)
+    {
+        $tanggal = $request->tanggal ?? date('Y-m-d');
+
+        $setor = Setoran::selectRaw('
+                        sampah_id,
+                        SUM(berat_setor) as total_berat,
+                        SUM(jumlah_uang) as total_nominal
+                    ')
+                    ->with('sampah')
+                    ->where('tanggal_setoran', $tanggal)
+                    ->groupBy('sampah_id')
+                    ->get();
+
+        $totalBerat = $setor->sum('total_berat');
+        $totalNominal = $setor->sum('total_nominal');
+
+
+        $pdf = Pdf::loadView('pdf.rekap-setoran', [
+            'tanggal'       => Carbon::parse($tanggal)->format('d/m/Y'),
+            'data'          => $setor,
+            'total_berat'   => $totalBerat,
+            'total_nominal'   => $totalNominal,
+        ])->setPaper('A4', 'portrait');
+
+        return $pdf->download('rekap-setoran-'.$tanggal.'.pdf');
     }
 }

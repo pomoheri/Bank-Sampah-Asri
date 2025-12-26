@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Tarik;
 use App\Models\Nasabah;
+use App\Models\Setoran;
 
 class TarikController extends Controller
 {
@@ -12,8 +13,7 @@ class TarikController extends Controller
     {
         $tariks = Tarik::with(['nasabah'])
             ->orderBy('tanggal_tarik', 'desc')
-            ->paginate(10) // bisa diganti sesuai jumlah per halaman
-            ->withQueryString(); // pastikan ini dipanggil saat masih QueryBuilder
+            ->get();
 
         return view('tarik.index', compact('tariks'));
     }
@@ -32,6 +32,17 @@ class TarikController extends Controller
             'nasabah_id' => 'required',
         ]);
 
+        $totalSetor = Setoran::where('nasabah_id', $request->nasabah_id)->sum('jumlah_uang');
+        $totalTarik = Tarik::where('nasabah_id', $request->nasabah_id)->sum('jumlah_uang_tarik');
+
+        $saldo = $totalSetor - $totalTarik;
+
+        if ($request->jumlah_uang_tarik > $saldo) {
+            return back()->withErrors([
+                'jumlah_uang_tarik' => 'Jumlah tarik melebihi saldo tersedia'
+            ]);
+        }
+
         Tarik::create([
             'tanggal_tarik' => $request->tanggal_tarik,
             'jumlah_uang_tarik' => $request->jumlah_uang_tarik,
@@ -41,13 +52,20 @@ class TarikController extends Controller
         return redirect()->route('tarik.index')->with('success', 'Penarikan berhasil disimpan.');
     }
 
-    public function edit($id)
+   public function edit($id)
     {
         $tarik = Tarik::findOrFail($id);
-
         $nasabah = Nasabah::all();
 
-        return view('tarik.edit', compact('tarik', 'nasabah'));
+        $totalSetor = Setoran::where('nasabah_id', $tarik->nasabah_id)
+            ->sum('jumlah_uang');
+
+        $totalTarik = Tarik::where('nasabah_id', $tarik->nasabah_id)
+            ->sum('jumlah_uang_tarik');
+
+        $saldo = ($totalSetor - $totalTarik) + $tarik->jumlah_uang_tarik;
+
+        return view('tarik.edit', compact('tarik', 'nasabah', 'saldo'));
     }
 
     public function update(Request $request, $id)
@@ -88,5 +106,16 @@ class TarikController extends Controller
 
         return view('tarik.report', compact('data'));
     }
-    //
+    
+    public function saldo($id)
+    {
+        $totalSetor = Setoran::where('nasabah_id', $id)->sum('jumlah_uang');
+        $totalTarik = Tarik::where('nasabah_id', $id)->sum('jumlah_uang_tarik');
+
+        $saldo = $totalSetor - $totalTarik;
+
+        return response()->json([
+            'saldo' => $saldo
+        ]);
+    }
 }

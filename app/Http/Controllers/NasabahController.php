@@ -10,7 +10,7 @@ class NasabahController extends Controller
 {
     public function index()
     {
-        $nasabahs = Nasabah::orderBy('created_at', 'desc')->paginate(10);
+        $nasabahs = Nasabah::orderBy('created_at', 'desc')->get();
         return view('nasabah.index', compact('nasabahs'));
     }
 

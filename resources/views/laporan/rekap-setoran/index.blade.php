@@ -4,41 +4,53 @@
 <div class="container-fluid mt-4">
     <div class="card shadow-sm">
         <div class="card-header bg-dark text-white">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
 
-                <!-- Judul -->
+                <!-- KIRI: Judul -->
                 <h4 class="mb-0">
-                <i class="fas fa-exchange-alt"></i>
-                Rekap Setoran {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}
+                    <i class="fas fa-exchange-alt"></i>
+                    Rekap Setoran {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}
                 </h4>
 
-                <!-- Filter Tanggal -->
-                <form 
-                    action="{{ route('laporan.rekap-setoran') }}" 
-                    method="GET"
-                    class="d-flex align-items-center gap-2"
+                <!-- KANAN: Filter + Button -->
+                <div class="d-flex align-items-center gap-2">
+
+                    <form 
+                        action="{{ route('laporan.rekap-setoran') }}" 
+                        method="GET"
+                        class="d-flex align-items-center gap-2"
                     >
-                    <label class="mb-0 fw-semibold text-white-50 mr-2">
-                        Tanggal
-                    </label>
+                        <label class="mb-0 fw-semibold text-white-50">
+                            Tanggal
+                        </label>
 
-                    <input 
-                        type="date" 
-                        name="date"
-                        class="form-control form-control-sm"
-                        style="width: 150px"
-                        value="{{ request('date', $date) }}"
-                        required
+                        <input 
+                            type="date" 
+                            name="date"
+                            class="form-control form-control-sm ml-2"
+                            style="width: 150px"
+                            value="{{ request('date', $date) }}"
+                            required
+                        >
+
+                        <button type="submit" class="btn btn-sm btn-info ml-2">
+                            <i class="fas fa-search"></i>
+                            Cari
+                        </button>
+                    </form>
+
+                    <a 
+                        class="btn btn-sm btn-success ml-2"
+                        href="{{ route('laporan.rekap-setoran.download', ['tanggal' => request('date', $date)]) }}"
                     >
+                        <i class="fas fa-download"></i>
+                        Download PDF
+                    </a>
 
-                    <button type="submit" class="btn btn-sm btn-info ml-2">
-                        <i class="fas fa-search"></i>
-                        Cari
-                    </button>
-                </form>
+                </div>
+            </div>
 
-            </div>
-            </div>
+        </div>
 
 
         <div class="card-body">
@@ -51,16 +63,6 @@
                 </div>
             @endif
 
-            @php
-                $tot_berat_setor = 0;
-                $tot_jumlah_uang = 0;
-
-                foreach ($setor as $trans) {
-                    $tot_berat_setor += $trans->berat_setor;
-                    $tot_jumlah_uang += $trans->jumlah_uang;
-                }
-            @endphp
-
             <div class="row mb-3">
                 <!-- Total Berat -->
                 <div class="col-md-6 mb-2">
@@ -71,7 +73,7 @@
                             Total Berat Setor
                         </div>
                         <div class="h4 mb-0 font-weight-bold text-success">
-                            {{ number_format($tot_berat_setor, 2, ',', '.') }} Kg
+                            {{ number_format($totalBerat, 2, ',', '.') }} Kg
                         </div>
                         </div>
                         <div class="text-success opacity-75">
@@ -90,7 +92,7 @@
                             Total Nominal Setoran
                         </div>
                         <div class="h4 mb-0 font-weight-bold text-primary">
-                            Rp {{ number_format($tot_jumlah_uang, 2, ',', '.') }}
+                            Rp {{ number_format($totalNominal, 2, ',', '.') }}
                         </div>
                         </div>
                         <div class="text-primary opacity-75">
@@ -107,20 +109,30 @@
                        class="table table-striped table-bordered table-hover nowrap w-100">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Nasabah</th>
+                            <th width="5%">No</th>
                             <th>Sampah</th>
-                            <th>Berat Sampah (Kg)</th>
-                            <th>Nominal (Rp)</th>
+                            <th width="20%">Total Berat (Kg/Pcs)</th>
+                            <th width="25%">Total Nominal (Rp)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($setor as $trans)
-                                <td>{{ Carbon\Carbon::parse($trans->tanggal_setoran)->format('d F Y') }}</td>
-                                <td>{{ $trans->sampah ? $trans->sampah->nama_sampah : '-' }}</td>
-                                <td class="text-right">{{ number_format($trans->berat_setor,'2',',','.') }}</td>
-                                <td class="text-right">{{ number_format($trans->jumlah_uang,'2',',','.') }}</td>
+                        @forelse ($setor as $i => $row)
+                            <tr>
+                                <td>{{ $i+1 }}</td>
+                                <td>{{ $row->sampah->nama_sampah ?? '-' }}</td>
+                                <td class="text-right">
+                                    {{ number_format($row->total_berat, 2, ',', '.') }}
+                                </td>
+                                <td class="text-right">
+                                    Rp {{ number_format($row->total_nominal, 2, ',', '.') }}
+                                </td>
                             </tr>
                         @empty
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    Tidak ada data
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>

@@ -14,7 +14,7 @@ class SetoranController extends Controller
     {
         $data = Setoran::with(['nasabah', 'sampah'])
             ->orderBy('tanggal_setoran', 'desc')
-            ->paginate(10); // bisa diganti sesuai jumlah per halaman
+            ->get(); // bisa diganti sesuai jumlah per halaman
 
         return view('setoran.index', compact('data'));
     }

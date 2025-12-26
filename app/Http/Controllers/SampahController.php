@@ -9,7 +9,7 @@ class SampahController extends Controller
 {
     public function index()
     {
-        $sampahs = Sampah::orderBy('created_at', 'desc')->paginate(10);
+        $sampahs = Sampah::orderBy('created_at', 'desc')->get();
         return view('sampah.index', compact('sampahs'));
     }
 

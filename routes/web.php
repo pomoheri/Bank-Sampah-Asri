@@ -66,6 +66,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/laporan/saldo', [LaporanController::class, 'saldo'])->name('laporan.saldo');
     Route::get('/laporan/transaksi', [LaporanController::class, 'lapTransaksi'])->name('laporan.transaksi');
     Route::get('/laporan/rekap-setoran', [LaporanController::class, 'rekapSetoran'])->name('laporan.rekap-setoran');
+    Route::get('/laporan/rekap-setoran/download', [LaporanController::class, 'downloadRekapSetoran'])->name('laporan.rekap-setoran.download');
+
 });
 
 //CRUD
@@ -97,3 +99,5 @@ Route::get('transaksi/report', [App\Http\Controllers\TransaksiController::class,
 // routes/web.php
 Route::resource('sampah', SampahController::class)->middleware('auth');
 // Route::get('/tarik/create', [TarikController::class, 'create'])->name('tarik.create');
+
+Route::get('/nasabah/{id}/saldo', [TarikController::class, 'saldo']);

@@ -32,8 +32,8 @@
             <thead class="table-light">
               <tr>
                 <th style="width: 35%">Jenis Sampah</th>
-                <th style="width: 20%">Harga/kg</th>
-                <th style="width: 20%">Berat (kg)</th>
+                <th style="width: 20%">Harga/(Kg/Pcs)</th>
+                <th style="width: 20%">Berat (kg/Pcs)</th>
                 <th style="width: 20%">Jumlah (Rp)</th>
                 <th style="width: 5%">Aksi</th>
               </tr>
